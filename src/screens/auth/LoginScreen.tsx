@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, typography, spacing } from '../../theme';
+import { typography, spacing, useTheme } from '../../theme';
 import { LanguageSwitcher, useLanguage } from '../../i18n';
 
 const { width, height } = Dimensions.get('window');
@@ -23,8 +23,11 @@ interface LoginScreenProps {
 export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
+  const { colors } = useTheme();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  
+  const styles = createStyles(colors);
 
   const handleLogin = () => {
     // Handle login logic here
@@ -100,7 +103,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   backgroundImage: {
     flex: 1,
     width: '100%',

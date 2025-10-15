@@ -4,7 +4,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Header from '../common/Header';
-import { colors } from '../../theme';
+import { useTheme } from '../../theme';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -21,6 +21,9 @@ export default function MainLayout({
   onNotificationPress,
   notificationCount = 1
 }: MainLayoutProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <Header
@@ -37,10 +40,10 @@ export default function MainLayout({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.login.background,
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,

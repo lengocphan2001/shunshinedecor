@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 const { width } = Dimensions.get('window');
 
 interface HeaderProps {
@@ -26,6 +26,9 @@ export default function Header({
   onNotificationPress,
   notificationCount = 1
 }: HeaderProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContent}>
@@ -79,9 +82,9 @@ export default function Header({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0,
     // 
   },

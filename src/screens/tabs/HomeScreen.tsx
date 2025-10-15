@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
 import ProjectItem from '../../components/cards/ProjectItem';
 import ActivityItem from '../../components/cards/ActivityItem';
-import { colors, typography, spacing } from '../../theme';
+import { typography, spacing, useTheme } from '../../theme';
 import { ProjectItemData } from '../../types/project';
 import { ActivityItemData } from '../../types/activity';
 import { ProjectDetailParams } from '../../types/navigation';
@@ -24,7 +24,10 @@ interface HomeScreenProps {
 
 export default function HomeScreen({ onNavigateToProjectDetail }: HomeScreenProps) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<'projectList' | 'activityLog'>('projectList');
+  
+  const styles = createStyles(colors);
 
   const handleProfilePress = () => {
     console.log('Profile pressed');
@@ -142,7 +145,7 @@ export default function HomeScreen({ onNavigateToProjectDetail }: HomeScreenProp
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     alignItems: 'center',

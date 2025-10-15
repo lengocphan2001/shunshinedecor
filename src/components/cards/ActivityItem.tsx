@@ -7,7 +7,7 @@ import {
   Image,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import { ActivityItemData } from '../../types/activity';
 
 interface ActivityItemProps {
@@ -16,6 +16,9 @@ interface ActivityItemProps {
 }
 
 export default function ActivityItem({ activity, onPress }: ActivityItemProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'success':
@@ -58,11 +61,11 @@ export default function ActivityItem({ activity, onPress }: ActivityItemProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,

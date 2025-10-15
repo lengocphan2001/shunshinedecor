@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 interface ProfileOption {
@@ -18,6 +19,10 @@ interface ProfileOption {
 }
 
 export default function ProfileScreen() {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const handleProfilePress = () => {
     console.log('Profile pressed');
   };
@@ -33,25 +38,25 @@ export default function ProfileScreen() {
   const profileOptions: ProfileOption[] = [
     {
       id: 'edit',
-      title: 'Edit Profile',
+      title: t('profile.editProfile'),
       icon: 'user',
       onPress: () => console.log('Edit Profile'),
     },
     {
       id: 'projects',
-      title: 'My Projects',
+      title: t('project.title'),
       icon: 'folder',
       onPress: () => console.log('My Projects'),
     },
     {
       id: 'notifications',
-      title: 'Notifications',
+      title: t('settings.notifications'),
       icon: 'bell',
       onPress: () => console.log('Notifications'),
     },
     {
       id: 'privacy',
-      title: 'Privacy & Security',
+      title: t('settings.privacy'),
       icon: 'shield-alt',
       onPress: () => console.log('Privacy & Security'),
     },
@@ -63,7 +68,7 @@ export default function ProfileScreen() {
     },
     {
       id: 'logout',
-      title: 'Logout',
+      title: t('settings.logout'),
       icon: 'sign-out-alt',
       onPress: () => console.log('Logout'),
     },
@@ -84,7 +89,7 @@ export default function ProfileScreen() {
       <Text style={styles.userEmail}>john.doe@example.com</Text>
       
       <TouchableOpacity style={styles.editProfileButton}>
-        <Text style={styles.editProfileText}>Edit Profile</Text>
+        <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -131,7 +136,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: spacing.lg,
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.xl,
     marginBottom: spacing.lg,
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: colors.background,
+    borderColor: colors.cardBackground,
   },
   userName: {
     ...typography.styles.displayMedium,
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   optionsContainer: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     
   },
@@ -231,7 +236,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.login.inputBackground,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,

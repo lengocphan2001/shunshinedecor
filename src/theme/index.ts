@@ -24,6 +24,9 @@ export { typography } from './typography';
 export { spacing } from './spacing';
 export { shadows } from './shadows';
 export { frostedGlass, frostedGlassDark, blurIntensity } from './effects';
+export { ThemeProvider, useTheme } from './ThemeContext';
+export { lightTheme, darkTheme } from './themes';
+export type { ThemeColors, Theme as ThemeMode } from './themes';
 
 export default theme;
 

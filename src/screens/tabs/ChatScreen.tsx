@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { ChatItem } from '../../types/chat';
 import { ContactItem } from '../../types/contact';
@@ -16,7 +17,11 @@ import { MOCK_CHATS, MOCK_CONTACTS, DEPARTMENTS } from '../../constants/mockData
 // Using imported constants instead of local definitions
 
 export default function ChatScreen() {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<'chat' | 'contact'>('chat');
+  
+  const styles = createStyles(colors);
 
   const handleProfilePress = () => {
     console.log('Profile pressed');
@@ -148,7 +153,7 @@ export default function ChatScreen() {
             styles.tabText,
             activeTab === 'chat' && styles.activeTabText
           ]}>
-            Chat
+            {t('chat.title')}
           </Text>
         </TouchableOpacity>
         
@@ -172,7 +177,7 @@ export default function ChatScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
   chatItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,
@@ -249,7 +254,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: colors.status.onSchedule,
     borderWidth: 2,
-    borderColor: colors.background,
+    borderColor: colors.cardBackground,
   },
   chatContent: {
     flex: 1,
@@ -313,7 +318,7 @@ const styles = StyleSheet.create({
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,

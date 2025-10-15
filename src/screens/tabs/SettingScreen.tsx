@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { LanguageSwitcher, useLanguage } from '../../i18n';
 
@@ -27,8 +27,8 @@ interface SettingItem {
 export default function SettingScreen() {
   const { t } = useTranslation();
   const { getCurrentLanguageInfo } = useLanguage();
+  const { isDark, toggleTheme, colors } = useTheme();
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
@@ -90,8 +90,8 @@ export default function SettingScreen() {
       description: 'Switch between light and dark themes',
       icon: 'moon',
       type: 'toggle',
-      value: darkMode,
-      onValueChange: setDarkMode,
+      value: isDark,
+      onValueChange: toggleTheme,
     },
     {
       id: 'sync',
@@ -119,6 +119,8 @@ export default function SettingScreen() {
       onPress: () => console.log('About'),
     },
   ];
+
+  const styles = createStyles(colors);
 
   const renderSettingItem = (item: SettingItem) => (
     <TouchableOpacity
@@ -184,7 +186,7 @@ export default function SettingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: spacing.lg,
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   settingItem: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.login.inputBackground,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,

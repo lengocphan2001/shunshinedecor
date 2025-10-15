@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 
 import { TabType } from '../../types/common';
 
@@ -18,42 +19,46 @@ interface BottomMenuProps {
 
 interface TabConfig {
   id: TabType;
-  label: string;
+  labelKey: string;
   icon: string;
   activeIcon: string;
 }
 
-const tabs: TabConfig[] = [
+const tabsConfig: TabConfig[] = [
   {
     id: 'home',
-    label: 'Home',
+    labelKey: 'navigation.home',
     icon: 'home',
     activeIcon: 'home',
   },
   {
     id: 'chat',
-    label: 'Chat',
+    labelKey: 'navigation.chat',
     icon: 'comment',
     activeIcon: 'comment',
   },
   {
     id: 'profile',
-    label: 'Profile',
+    labelKey: 'navigation.profile',
     icon: 'user',
     activeIcon: 'user',
   },
   {
     id: 'setting',
-    label: 'Setting',
+    labelKey: 'navigation.settings',
     icon: 'cog',
     activeIcon: 'cog',
   },
 ];
 
 export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
-      {tabs.map((tab) => {
+      {tabsConfig.map((tab) => {
         const isActive = activeTab === tab.id;
         
         return (
@@ -74,7 +79,7 @@ export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
                 styles.tabLabel,
                 isActive && styles.activeTabLabel
               ]}>
-                {tab.label}
+                {t(tab.labelKey)}
               </Text>
             </View>
             {isActive && <View style={styles.activeIndicator} />}
@@ -85,14 +90,15 @@ export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     flexDirection: 'row',
     paddingTop: spacing.md,
     paddingBottom: Platform.OS === 'ios' ? 34 : spacing.md,
     paddingHorizontal: spacing.sm,
-    
+    borderTopWidth: 1,
+    borderTopColor: colors.divider,
   },
   tabButton: {
     flex: 1,

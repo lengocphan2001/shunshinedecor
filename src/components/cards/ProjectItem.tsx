@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import { ProjectItemData } from '../../types/project';
 
 interface ProjectItemProps {
@@ -14,6 +14,9 @@ interface ProjectItemProps {
 }
 
 export default function ProjectItem({ project, onPress }: ProjectItemProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'onSchedule':
@@ -50,11 +53,11 @@ export default function ProjectItem({ project, onPress }: ProjectItemProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,
