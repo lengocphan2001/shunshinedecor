@@ -1,0 +1,121 @@
+{
+  "common": {
+    "appName": "Shunshine Decor",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "add": "Thêm",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "done": "Hoàn thành",
+    "ok": "Đồng ý"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "welcomeBack": "Chào mừng trở lại",
+    "pleaseLogin": "Vui lòng đăng nhập để tiếp tục"
+  },
+  "home": {
+    "title": "Trang chủ",
+    "projectList": "Danh sách dự án",
+    "activityLog": "Nhật ký hoạt động",
+    "addMore": "+ Thêm",
+    "noProjects": "Chưa có dự án nào",
+    "noActivities": "Chưa có hoạt động nào"
+  },
+  "project": {
+    "title": "Dự án",
+    "detail": "Chi tiết dự án",
+    "new": "Dự án mới",
+    "edit": "Chỉnh sửa dự án",
+    "delete": "Xóa dự án",
+    "name": "Tên dự án",
+    "description": "Mô tả",
+    "status": "Trạng thái",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "progress": "Tiến độ",
+    "team": "Đội ngũ",
+    "budget": "Ngân sách",
+    "client": "Khách hàng",
+    "location": "Địa điểm"
+  },
+  "inspection": {
+    "title": "Kiểm tra",
+    "itp": "Kiểm tra ITP",
+    "detail": "Chi tiết kiểm tra",
+    "date": "Ngày kiểm tra",
+    "inspector": "Người kiểm tra",
+    "status": "Trạng thái",
+    "remarks": "Ghi chú",
+    "photos": "Hình ảnh",
+    "passed": "Đạt",
+    "failed": "Không đạt",
+    "pending": "Đang chờ"
+  },
+  "chat": {
+    "title": "Trò chuyện",
+    "messages": "Tin nhắn",
+    "typeMessage": "Nhập tin nhắn...",
+    "send": "Gửi",
+    "noMessages": "Chưa có tin nhắn",
+    "online": "Trực tuyến",
+    "offline": "Ngoại tuyến"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "settings": "Cài đặt",
+    "personalInfo": "Thông tin cá nhân",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "phone": "Số điện thoại",
+    "email": "Email",
+    "position": "Chức vụ",
+    "department": "Phòng ban"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "english": "Tiếng Anh",
+    "vietnamese": "Tiếng Việt",
+    "notifications": "Thông báo",
+    "pushNotifications": "Thông báo đẩy",
+    "emailNotifications": "Thông báo email",
+    "privacy": "Quyền riêng tư",
+    "terms": "Điều khoản & Điều kiện",
+    "about": "Giới thiệu",
+    "version": "Phiên bản",
+    "logout": "Đăng xuất"
+  },
+  "status": {
+    "inProgress": "Đang thực hiện",
+    "completed": "Hoàn thành",
+    "pending": "Đang chờ",
+    "cancelled": "Đã hủy",
+    "delayed": "Bị trễ",
+    "onTrack": "Đúng tiến độ"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "projects": "Dự án",
+    "inspection": "Kiểm tra",
+    "chat": "Trò chuyện",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt"
+  }
+}
+

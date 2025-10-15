@@ -1,0 +1,121 @@
+{
+  "common": {
+    "appName": "Shunshine Decor",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "ok": "OK"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "welcomeBack": "Welcome Back",
+    "pleaseLogin": "Please login to continue"
+  },
+  "home": {
+    "title": "Home",
+    "projectList": "Project List",
+    "activityLog": "Activity Log",
+    "addMore": "+ Add more",
+    "noProjects": "No projects yet",
+    "noActivities": "No activities yet"
+  },
+  "project": {
+    "title": "Projects",
+    "detail": "Project Detail",
+    "new": "New Project",
+    "edit": "Edit Project",
+    "delete": "Delete Project",
+    "name": "Project Name",
+    "description": "Description",
+    "status": "Status",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "progress": "Progress",
+    "team": "Team",
+    "budget": "Budget",
+    "client": "Client",
+    "location": "Location"
+  },
+  "inspection": {
+    "title": "Inspection",
+    "itp": "ITP Inspection",
+    "detail": "Inspection Detail",
+    "date": "Inspection Date",
+    "inspector": "Inspector",
+    "status": "Status",
+    "remarks": "Remarks",
+    "photos": "Photos",
+    "passed": "Passed",
+    "failed": "Failed",
+    "pending": "Pending"
+  },
+  "chat": {
+    "title": "Chat",
+    "messages": "Messages",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "noMessages": "No messages yet",
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "email": "Email",
+    "position": "Position",
+    "department": "Department"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "vietnamese": "Vietnamese",
+    "notifications": "Notifications",
+    "pushNotifications": "Push Notifications",
+    "emailNotifications": "Email Notifications",
+    "privacy": "Privacy",
+    "terms": "Terms & Conditions",
+    "about": "About",
+    "version": "Version",
+    "logout": "Logout"
+  },
+  "status": {
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "delayed": "Delayed",
+    "onTrack": "On Track"
+  },
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "inspection": "Inspection",
+    "chat": "Chat",
+    "profile": "Profile",
+    "settings": "Settings"
+  }
+}
+
