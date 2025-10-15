@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { colors, typography, spacing } from '../../theme';
+import { typography, spacing, useTheme } from '../../theme';
 
 export interface BreadcrumbItem {
   id: string;
@@ -26,6 +26,9 @@ export default function Breadcrumb({
   separator = 'chevron',
   maxItems 
 }: BreadcrumbProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const getSeparatorIcon = () => {
     switch (separator) {
       case 'chevron':
@@ -107,7 +110,7 @@ export default function Breadcrumb({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     paddingVertical: spacing.sm,
   },

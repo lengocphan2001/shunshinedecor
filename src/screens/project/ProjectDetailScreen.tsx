@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import ScreenLayout from '../../components/layout/ScreenLayout';
 import ItemCard from '../../components/common/ItemCard';
-import { colors, typography, spacing } from '../../theme';
+import { typography, spacing, useTheme } from '../../theme';
 import { useScreenHandlers, useBreadcrumb } from '../../hooks';
 import { BaseScreenProps, ActionButtonProps } from '../../types';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -31,7 +32,11 @@ export default function ProjectDetailScreen({
   navigationStack,
   onNavigateToScreen
 }: ProjectDetailProps) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<ProjectTab>('tool');
+  
+  const styles = createStyles(colors);
   
   // Use custom hooks
   const screenHandlers = useScreenHandlers();
@@ -125,7 +130,7 @@ export default function ProjectDetailScreen({
         
         {/* Add more button */}
         <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
-          <Text style={styles.addMoreText}>+ Add more</Text>
+          <Text style={styles.addMoreText}>{t('home.addMore')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -256,7 +261,7 @@ export default function ProjectDetailScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   breadcrumbContainer: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
@@ -305,7 +310,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.login.inputBackground,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,

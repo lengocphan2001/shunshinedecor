@@ -7,7 +7,7 @@ import {
   Image,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import StatusIcon from './StatusIcon';
 
 interface ItemCardProps {
@@ -37,6 +37,9 @@ export default function ItemCard({
   leftContent,
   rightContent,
 }: ItemCardProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const renderLeftContent = () => {
     if (leftContent) return leftContent;
     
@@ -109,11 +112,11 @@ export default function ItemCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,

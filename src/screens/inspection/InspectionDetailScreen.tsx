@@ -7,9 +7,10 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
 import Breadcrumb, { BreadcrumbItem } from '../../components/common/Breadcrumb';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { typography, spacing, shadows, useTheme } from '../../theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { generateBreadcrumbItems } from '../../utils/breadcrumbUtils';
 
@@ -41,6 +42,11 @@ export default function InspectionDetailScreen({
   navigationStack,
   onNavigateToScreen
 }: InspectionDetailProps) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  
+  const styles = createStyles(colors);
+
   const handleProfilePress = () => {
     console.log('Profile pressed');
   };
@@ -170,7 +176,7 @@ export default function InspectionDetailScreen({
           
           {/* Add more button */}
           <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
-            <Text style={styles.addMoreText}>+ Add more</Text>
+            <Text style={styles.addMoreText}>{t('home.addMore')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -178,7 +184,7 @@ export default function InspectionDetailScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   breadcrumbContainer: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
@@ -198,7 +204,7 @@ const styles = StyleSheet.create({
   inspectionDetailItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,
