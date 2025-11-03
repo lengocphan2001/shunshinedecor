@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ImageBackground } from 'react-native';
 import LoginScreen from '../auth/LoginScreen';
 import HomeScreen from '../tabs/HomeScreen';
 import ChatScreen from '../tabs/ChatScreen';
+import { ChatDetailScreen } from '../chat';
+import ApprovalCenterScreen from '../tabs/ApprovalCenterScreen';
+import ToDoScreen from '../tabs/ToDoScreen';
+import MoreScreen from '../tabs/MoreScreen';
 import ProfileScreen from '../tabs/ProfileScreen';
 import SettingScreen from '../tabs/SettingScreen';
 import ProjectDetailScreen from '../project/ProjectDetailScreen';
+import { QuickReportScreen } from '../project';
 import ITPInspectionScreen from '../inspection/ITPInspectionScreen';
 import InspectionDetailScreen from '../inspection/InspectionDetailScreen';
 import BottomMenu from '../../components/common/BottomMenu';
-import { TabType, ScreenType, NavigationState, ProjectDetailParams, ITPInspectionParams, InspectionDetailParams, SCREEN_PATHS } from '../../types';
-import { colors, spacing } from '../../theme';
+import { TabType, ScreenType, NavigationState, ProjectDetailParams, ITPInspectionParams, InspectionDetailParams, ChatDetailParams, QuickReportParams, SCREEN_PATHS } from '../../types';
+import { colors, spacing, useTheme } from '../../theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { meApi, logoutApi } from '../../api/auth';
 
 export default function AppNavigator() {
+  const { backgroundSource } = useTheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [restoring, setRestoring] = useState(true);
   const [navigationState, setNavigationState] = useState<NavigationState>({
     currentScreen: 'home',
     activeTab: 'home',
@@ -24,7 +33,8 @@ export default function AppNavigator() {
     setIsLoggedIn(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutApi();
     setIsLoggedIn(false);
     setNavigationState({
       currentScreen: 'home',
@@ -32,6 +42,19 @@ export default function AppNavigator() {
       navigationStack: ['home'],
     });
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        if (token) {
+          await meApi(); // validate token
+          setIsLoggedIn(true);
+        }
+      } catch {}
+      finally { setRestoring(false); }
+    })();
+  }, []);
 
   const handleTabChange = (tab: TabType) => {
     setNavigationState({
@@ -61,12 +84,41 @@ export default function AppNavigator() {
     });
   };
 
+  const handleNavigateToQuickReport = (params: QuickReportParams) => {
+    const newStack = [...(navigationState.navigationStack || []), 'quickReport'] as ScreenType[];
+    setNavigationState({
+      currentScreen: 'quickReport',
+      activeTab: navigationState.activeTab,
+      params,
+      navigationStack: newStack,
+    });
+  };
+
   const handleNavigateToInspectionDetail = (params: InspectionDetailParams) => {
     const newStack = [...(navigationState.navigationStack || []), 'inspectionDetail'] as ScreenType[];
     setNavigationState({
       currentScreen: 'inspectionDetail',
       activeTab: navigationState.activeTab,
       params,
+      navigationStack: newStack,
+    });
+  };
+
+  const handleNavigateToChatDetail = (params: ChatDetailParams) => {
+    const newStack = [...(navigationState.navigationStack || []), 'chatDetail'] as ScreenType[];
+    setNavigationState({
+      currentScreen: 'chatDetail',
+      activeTab: navigationState.activeTab,
+      params,
+      navigationStack: newStack,
+    });
+  };
+
+  const handleOpenSetting = () => {
+    const newStack = [...(navigationState.navigationStack || []), 'setting'] as ScreenType[];
+    setNavigationState({
+      currentScreen: 'setting',
+      activeTab: navigationState.activeTab,
       navigationStack: newStack,
     });
   };
@@ -123,7 +175,24 @@ export default function AppNavigator() {
       case 'home':
         return <HomeScreen onNavigateToProjectDetail={handleNavigateToProjectDetail} />;
       case 'chat':
-        return <ChatScreen />;
+        return <ChatScreen onNavigateToChatDetail={handleNavigateToChatDetail} />;
+      case 'chatDetail':
+        return (
+          <ChatDetailScreen 
+            chatId={navigationState.params?.chatId || ''}
+            chatName={navigationState.params?.chatName || ''}
+            unreadCount={navigationState.params?.unreadCount}
+            onGoBack={handleGoBack}
+            navigationStack={navigationState.navigationStack}
+            onNavigateToScreen={handleNavigateToSpecificScreen}
+          />
+        );
+      case 'approval':
+        return <ApprovalCenterScreen />;
+      case 'todo':
+        return <ToDoScreen />;
+      case 'more':
+        return <MoreScreen onNavigateToSetting={handleOpenSetting} />;
       case 'profile':
         return <ProfileScreen />;
       case 'setting':
@@ -135,6 +204,7 @@ export default function AppNavigator() {
             projectName={navigationState.params?.projectName}
             onGoBack={handleGoBack}
             onNavigateToITPInspection={handleNavigateToITPInspection}
+            onNavigateToQuickReport={handleNavigateToQuickReport}
             navigationStack={navigationState.navigationStack}
             onNavigateToScreen={handleNavigateToSpecificScreen}
           />
@@ -162,22 +232,46 @@ export default function AppNavigator() {
             onNavigateToScreen={handleNavigateToSpecificScreen}
           />
         );
+      case 'quickReport':
+        return (
+          <QuickReportScreen 
+            projectId={navigationState.params?.projectId || ''}
+            projectName={navigationState.params?.projectName}
+            onGoBack={handleGoBack}
+            navigationStack={navigationState.navigationStack}
+            onNavigateToScreen={handleNavigateToSpecificScreen}
+          />
+        );
       default:
         return <HomeScreen onNavigateToProjectDetail={handleNavigateToProjectDetail} />;
     }
   };
 
+  if (restoring) {
+    return null;
+  }
+
   if (isLoggedIn) {
+    const hideBottomForScreens: ScreenType[] = ['chatDetail', 'projectDetail', 'itpInspection', 'inspectionDetail', 'setting', 'quickReport'];
+    const shouldShowBottomMenu = !hideBottomForScreens.includes(navigationState.currentScreen as ScreenType);
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>
-          {renderActiveScreen()}
+      <ImageBackground
+        source={backgroundSource}
+        resizeMode="cover"
+        style={styles.background}
+      >
+        <View style={styles.container}>
+          <View style={styles.content}>
+            {renderActiveScreen()}
+          </View>
+          {shouldShowBottomMenu && (
+            <BottomMenu
+              activeTab={navigationState.activeTab as TabType}
+              onTabPress={handleTabChange}
+            />
+          )}
         </View>
-        <BottomMenu
-          activeTab={navigationState.activeTab as TabType}
-          onTabPress={handleTabChange}
-        />
-      </View>
+      </ImageBackground>
     );
   }
 
@@ -185,9 +279,12 @@ export default function AppNavigator() {
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: colors.login.background,
+    backgroundColor: 'transparent',
   },
   content: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,16 +12,90 @@ import { typography, spacing, shadows, useTheme } from '../../theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { ChatItem } from '../../types/chat';
 import { ContactItem } from '../../types/contact';
-import { MOCK_CHATS, MOCK_CONTACTS, DEPARTMENTS } from '../../constants/mockData';
+import { listChatsApi } from '../../api/chat';
+import { listProjectsApi } from '../../api/projects';
+import { useAuth } from '../../contexts/AuthContext';
+import AddContactModal from '../../components/modals/AddContactModal';
 
 // Using imported constants instead of local definitions
 
-export default function ChatScreen() {
+interface ChatScreenProps {
+  onNavigateToChatDetail?: (params: { chatId: string; chatName: string; unreadCount?: number }) => void;
+}
+
+export default function ChatScreen({ onNavigateToChatDetail }: ChatScreenProps) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { isAdmin, user } = useAuth();
   const [activeTab, setActiveTab] = useState<'chat' | 'contact'>('chat');
+  const [chats, setChats] = useState<ChatItem[]>([]);
+  const [projectContacts, setProjectContacts] = useState<Record<string, { projectName: string; contacts: ContactItem[] }>>({});
+  const [showAddContactModal, setShowAddContactModal] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
+  const [selectedProjectName, setSelectedProjectName] = useState<string>('');
   
-  const styles = createStyles(colors);
+  const styles = createStyles(colors, isDark);
+
+  // Debug logging
+  console.log('ChatScreen - isAdmin:', isAdmin);
+  console.log('ChatScreen - user:', user);
+  console.log('ChatScreen - projectContacts:', projectContacts);
+
+  useEffect(() => {
+    (async () => {
+
+      try {
+        // Load chats (server filters by role/membership)
+        const chatRes = await listChatsApi();
+        const mappedChats: ChatItem[] = (chatRes?.chats || []).map((c: any) => ({
+          id: String(c.id),
+          name: c.name,
+          lastMessage: c?.lastMessage?.content || '',
+          time: c?.lastMessage?.timestamp ? new Date(c.lastMessage.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '',
+          unreadCount: c?.unreadCount ?? 0,
+          isOnline: false,
+        }));
+        setChats(mappedChats);
+      } catch {}
+
+      try {
+        // Load projects with contacts
+        const projRes = await listProjectsApi();
+        const projects: any[] = (projRes as any)?.projects || [];
+        const contactMap: Record<string, { projectName: string; contacts: ContactItem[] }> = {};
+        for (const p of projects) {
+          const contacts = (p.contacts || []).map((ct: any, idx: number) => ({
+            id: `${p._id}-${idx}`,
+            name: ct.name,
+            displayName: ct.displayName,
+            phone: ct.phone || '',
+            email: ct.email || '',
+            department: p.name,
+          }));
+          contactMap[p._id] = { projectName: p.name, contacts };
+        }
+        
+        // For testing purposes, add mock project if no projects exist
+        if (Object.keys(contactMap).length === 0) {
+          contactMap['mock-project-1'] = {
+            projectName: 'PizzaHUT',
+            contacts: []
+          };
+          contactMap['mock-project-2'] = {
+            projectName: 'Pizza4P',
+            contacts: []
+          };
+          contactMap['mock-project-3'] = {
+            projectName: 'Dự án 4PS',
+            contacts: []
+          };
+          console.log('Added mock projects for testing');
+        }
+        
+        setProjectContacts(contactMap);
+      } catch {}
+    })();
+  }, []);
 
   const handleProfilePress = () => {
     console.log('Profile pressed');
@@ -36,7 +110,15 @@ export default function ChatScreen() {
   };
 
   const handleChatItemPress = (chat: ChatItem) => {
-    console.log('Chat item pressed:', chat.name);
+    if (onNavigateToChatDetail) {
+      onNavigateToChatDetail({
+        chatId: chat.id,
+        chatName: chat.name,
+        unreadCount: chat.unreadCount,
+      });
+    } else {
+      console.log('Chat item pressed:', chat.name);
+    }
   };
 
   const handleContactPress = (contact: ContactItem) => {
@@ -45,6 +127,25 @@ export default function ChatScreen() {
 
   const handleTabChange = (tab: 'chat' | 'contact') => {
     setActiveTab(tab);
+  };
+
+  const handleAddContact = (projectId: string, projectName: string) => {
+    setSelectedProjectId(projectId);
+    setSelectedProjectName(projectName);
+    setShowAddContactModal(true);
+  };
+
+  const handleContactAdded = (newContact: ContactItem) => {
+    setProjectContacts(prev => {
+      const updated = { ...prev };
+      if (updated[selectedProjectId]) {
+        updated[selectedProjectId] = {
+          ...updated[selectedProjectId],
+          contacts: [...updated[selectedProjectId].contacts, newContact],
+        };
+      }
+      return updated;
+    });
   };
 
   const renderChatItem = (chat: ChatItem) => (
@@ -88,7 +189,7 @@ export default function ChatScreen() {
       onPress={() => handleContactPress(contact)}
     >
       <View style={styles.contactAvatar}>
-        <Text style={styles.contactAvatarText}>{contact.name}</Text>
+        <Text style={styles.contactAvatarText}>{contact.name.charAt(0).toUpperCase()}</Text>
       </View>
       
       <View style={styles.contactInfo}>
@@ -99,15 +200,30 @@ export default function ChatScreen() {
     </TouchableOpacity>
   );
 
-  const renderContactsByDepartment = () => {
-    return DEPARTMENTS.map((dept) => {
-      const departmentContacts = MOCK_CONTACTS.filter(contact => contact.department === dept);
-      
+  const renderContactsByProject = () => {
+    const entries = Object.entries(projectContacts);
+    console.log('renderContactsByProject - entries:', entries);
+    console.log('renderContactsByProject - isAdmin:', isAdmin);
+    console.log('renderContactsByProject - user:', user);
+    
+    if (entries.length === 0) {
+      console.log('No project contacts found');
+      return null;
+    }
+    
+    return entries.map(([projectId, val]) => {
+      console.log(`Rendering project ${projectId}:`, val);
       return (
-        <View key={dept} style={styles.departmentSection}>
-          <Text style={styles.departmentTitle}>{dept}</Text>
-          {departmentContacts.map(renderContactItem)}
-        </View>
+      <View key={projectId} style={styles.departmentSection}>
+        <Text style={styles.departmentTitle}>{val.projectName}</Text>
+        {val.contacts.map(renderContactItem)}
+          {/* Add Contact Button - Admin only */}
+          {isAdmin && (
+            <TouchableOpacity style={styles.addMoreButton} onPress={() => handleAddContact(projectId, val.projectName)}>
+              <Text style={styles.addMoreText}>{t('home.addMore')}</Text>
+            </TouchableOpacity>
+          )}
+      </View>
       );
     });
   };
@@ -119,7 +235,7 @@ export default function ChatScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {MOCK_CHATS.map(renderChatItem)}
+        {chats.map(renderChatItem)}
       </ScrollView>
     </View>
   );
@@ -131,7 +247,24 @@ export default function ChatScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {renderContactsByDepartment()}
+        {renderContactsByProject()}
+        
+        {/* Show add contact button for admin even if no projects */}
+        {isAdmin && Object.keys(projectContacts).length === 0 && (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>Chưa có project nào</Text>
+            <TouchableOpacity
+              style={styles.addFirstContactButton}
+              onPress={() => {
+                // You can add logic to create first project or show message
+                console.log('No projects available to add contacts');
+              }}
+            >
+              <FontAwesome5 name="plus" size={16} color={colors.primary} />
+              <Text style={styles.addFirstContactText}>Tạo Project đầu tiên</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -173,17 +306,31 @@ export default function ChatScreen() {
       </View>
 
       {activeTab === 'chat' ? renderChatList() : renderContactList()}
+
+      {/* Add Contact Modal */}
+      <AddContactModal
+        visible={showAddContactModal}
+        onClose={() => setShowAddContactModal(false)}
+        projectId={selectedProjectId}
+        projectName={selectedProjectName}
+        onContactAdded={handleContactAdded}
+      />
     </MainLayout>
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
-    // backgroundColor: colors.background,
+    backgroundColor: isDark ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.6)',
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
+    borderRadius: spacing.borderRadius.large,
+    borderWidth: 1,
+    borderColor: colors.divider,
   },
   tab: {
     paddingHorizontal: spacing.sm,
@@ -315,6 +462,16 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.text.primary,
     marginBottom: spacing.lg,
   },
+  addMoreButton: {
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+  },
+  addMoreText: {
+    ...typography.styles.textMedium,
+    fontSize: 14,
+    color: colors.text.secondary,
+    fontWeight: '400',
+  },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -361,5 +518,34 @@ const createStyles = (colors: any) => StyleSheet.create({
     ...typography.styles.textMedium,
     fontSize: 14,
     color: colors.text.secondary,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: spacing.xl * 2,
+  },
+  emptyStateText: {
+    ...typography.styles.textMedium,
+    fontSize: 16,
+    color: colors.text.secondary,
+    marginBottom: spacing.lg,
+  },
+  addFirstContactButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.cardBackground,
+    borderRadius: spacing.borderRadius.medium,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  addFirstContactText: {
+    ...typography.styles.textMedium,
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.primary,
+    marginLeft: spacing.sm,
   },
 });

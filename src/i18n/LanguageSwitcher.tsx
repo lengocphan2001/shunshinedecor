@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLanguage, Language, LanguageOption } from './useLanguage';
-import { colors, typography, spacing } from '../theme';
+import { typography, spacing, useTheme } from '../theme';
 
 interface LanguageSwitcherProps {
   variant?: 'button' | 'modal';
@@ -29,8 +29,11 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   onLanguageChange,
 }) => {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const { currentLanguage, changeLanguage, languages } = useLanguage();
   const [modalVisible, setModalVisible] = useState(false);
+  
+  const styles = createStyles(colors);
 
   const handleLanguageSelect = async (language: Language) => {
     await changeLanguage(language);
@@ -75,9 +78,8 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
           activeOpacity={0.7}
         >
           <Text style={styles.buttonText}>
-            {currentLangInfo?.nativeName || 'English'}
+            {currentLanguage.toUpperCase()}
           </Text>
-          <Text style={styles.buttonIcon}>▼</Text>
         </TouchableOpacity>
 
         <Modal
@@ -127,27 +129,24 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   // Button variant styles
   languageButton: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.divider,
+    minWidth: 50,
   },
   buttonText: {
     ...typography.styles.textMedium,
-    fontSize: 14,
+    fontSize: 16,
     color: colors.text.primary,
-    marginRight: spacing.xs,
-  },
-  buttonIcon: {
-    fontSize: 10,
-    color: colors.text.secondary,
+    fontWeight: '600',
   },
 
   // Modal styles
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.cardBackground,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: spacing.xl,

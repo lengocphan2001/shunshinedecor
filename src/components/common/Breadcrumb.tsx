@@ -26,8 +26,8 @@ export default function Breadcrumb({
   separator = 'chevron',
   maxItems 
 }: BreadcrumbProps) {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, isDark } = useTheme();
+  const styles = createStyles(colors, isDark);
 
   const getSeparatorIcon = () => {
     switch (separator) {
@@ -110,9 +110,14 @@ export default function Breadcrumb({
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   container: {
     paddingVertical: spacing.sm,
+    backgroundColor: isDark ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.6)',
+    borderRadius: spacing.borderRadius.large,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.divider,
   },
   scrollContent: {
     alignItems: 'center',
@@ -127,14 +132,23 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     color: colors.text.secondary,
     fontWeight: '400',
+    textShadowColor: 'rgba(0,0,0,0.35)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   activeItemText: {
     color: colors.text.secondary,
     fontWeight: '400',
+    textShadowColor: 'rgba(0,0,0,0.35)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   parentItemText: {
     color: colors.text.primary,
     fontWeight: 'bold',
+    textShadowColor: 'rgba(0,0,0,0.35)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   disabledItemText: {
     color: colors.text.secondary,

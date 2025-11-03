@@ -13,6 +13,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { typography, spacing, useTheme } from '../../theme';
 import { LanguageSwitcher, useLanguage } from '../../i18n';
+import { loginApi } from '../../api/auth';
+import { useAuth } from '../../contexts/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,19 +26,46 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
   const { colors } = useTheme();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorVisible, setErrorVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   const styles = createStyles(colors);
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log('Login attempt:', { username, password });
-    // For demo purposes, navigate to home after login
-    onLoginSuccess?.();
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      const userData = await loginApi(username, password);
+      
+      // Update AuthContext with new user data
+      // Backend returns { id: user._id, email, ... }
+      if (userData) {
+        // Map to ensure id field is correct
+        const mappedUser = {
+          id: userData._id?.toString() || userData.id?.toString() || '',
+          email: userData.email || '',
+          fullName: userData.fullName || '',
+          role: userData.role || 'STAFF',
+          isActive: userData.isActive !== false,
+        };
+        login(mappedUser);
+        console.log('Login successful, user updated:', mappedUser.email, 'ID:', mappedUser.id);
+      }
+      
+      onLoginSuccess?.();
+    } catch (e: any) {
+      const msg = e?.message || 'Login failed';
+      console.log('Login error:', msg);
+      setErrorMessage(msg);
+      setErrorVisible(true);
+    } finally { setLoading(false); }
   };
 
   return (
+    <>
     <ImageBackground 
       source={require('../../../assets/background.jpg')} 
       style={styles.backgroundImage}
@@ -85,8 +114,8 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             />
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
+            <TouchableOpacity style={[styles.loginButton, loading && { opacity: 0.6 }]} onPress={handleLogin} disabled={loading}>
+              <Text style={styles.loginButtonText}>{loading ? (t('common.loading') || 'Loading...') : t('auth.login')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -94,12 +123,23 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         {/* Footer */}
         <View style={styles.footerContainer}>
           <Text style={styles.footerText}>Project Manager App by</Text>
-          <View style={styles.brandLogo}>
-            <Text style={styles.brandText}>SUN SHINE</Text>
-          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
+    
+    {/* Error Modal */}
+    {errorVisible && (
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalCard}>
+          <Text style={styles.modalTitle}>{t('auth.login')}</Text>
+          <Text style={styles.modalMessage}>{errorMessage}</Text>
+          <TouchableOpacity style={styles.modalButton} onPress={() => setErrorVisible(false)}>
+            <Text style={styles.modalButtonText}>{t('common.close') || 'Close'}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )}
+    </>
   );
 }
 
@@ -172,9 +212,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     position: 'absolute',
     bottom: spacing.xl * 1.5,
     right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingRight: spacing.md,
   },
   footerText: {
     ...typography.styles.login.footer,
@@ -185,12 +222,57 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   brandLogo: {
     backgroundColor: colors.login.brandBackground,
-    paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: spacing.borderRadius.xs,
+    transform: [{ rotate: '90deg' }],
   },
   brandText: {
     ...typography.styles.login.brand,
     color: colors.text.white,
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  modalCard: {
+    width: '100%',
+    backgroundColor: colors.background || '#111',
+    borderRadius: spacing.borderRadius.medium,
+    padding: spacing.xl,
+    borderWidth: 1,
+    borderColor: colors.login.inputBorder,
+  },
+  modalTitle: {
+    ...typography.styles.displayMedium,
+    color: colors.text.primary,
+    marginBottom: spacing.md,
+    fontSize: 20,
+  },
+  modalMessage: {
+    ...typography.styles.textMedium,
+    color: colors.text.secondary,
+    marginBottom: spacing.lg,
+    fontSize: 16,
+  },
+  modalButton: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.login.buttonBackground,
+    borderRadius: spacing.borderRadius.small,
+    borderWidth: 1,
+    borderColor: colors.login.inputBorder,
+  },
+  modalButtonText: {
+    ...typography.styles.login.button,
+    color: colors.text.primary,
+    fontSize: 16,
   },
 });

@@ -15,7 +15,9 @@
     "back": "Quay lại",
     "next": "Tiếp theo",
     "done": "Hoàn thành",
-    "ok": "Đồng ý"
+    "ok": "Đồng ý",
+    "close": "Đóng",
+    "create": "Tạo"
   },
   "auth": {
     "login": "Đăng nhập",
@@ -33,6 +35,8 @@
     "activityLog": "Nhật ký hoạt động",
     "addMore": "+ Thêm",
     "noProjects": "Chưa có dự án nào",
+    "addProject": "Thêm dự án",
+    "create": "Tạo",
     "noActivities": "Chưa có hoạt động nào"
   },
   "project": {
@@ -68,11 +72,28 @@
   "chat": {
     "title": "Trò chuyện",
     "messages": "Tin nhắn",
-    "typeMessage": "Nhập tin nhắn...",
+    "typeMessage": "Tin nhắn...",
     "send": "Gửi",
     "noMessages": "Chưa có tin nhắn",
     "online": "Trực tuyến",
     "offline": "Ngoại tuyến"
+  },
+  "chatDetail": {
+    "topic": "Chủ đề",
+    "chat": "Trò chuyện",
+    "typeMessage": "Tin nhắn...",
+    "sendFile": "Gửi tệp",
+    "survey": "Khảo sát",
+    "transfer": "Chuyển",
+    "group": "Nhóm",
+    "noTopics": "Chưa có chủ đề nào",
+    "noMessages": "Chưa có tin nhắn nào",
+    "connecting": "Đang kết nối...",
+    "quality": "Chất lượng",
+    "schedule": "Tiến độ",
+    "drawing": "Bản vẽ",
+    "others": "Khác",
+    "chooseTopicFirst": "+ Chọn chủ đề trước"
   },
   "profile": {
     "title": "Hồ sơ",
@@ -110,12 +131,38 @@
     "onTrack": "Đúng tiến độ"
   },
   "navigation": {
-    "home": "Trang chủ",
+    "home": "Dự án",
     "projects": "Dự án",
     "inspection": "Kiểm tra",
-    "chat": "Trò chuyện",
+    "chat": "Thảo luận",
+    "approval": "Phê duyệt",
+    "todo": "Nhiệm vụ",
+    "more": "Thêm",
     "profile": "Hồ sơ",
     "settings": "Cài đặt"
+  },
+  "approval": {
+    "title": "Trung tâm phê duyệt",
+    "search": "Tìm kiếm",
+    "all": "Tất cả",
+    "quality": "Chất lượng",
+    "schedule": "Tiến độ",
+    "material": "Vật liệu",
+    "drawing": "Bản vẽ",
+    "review": "Xem xét",
+    "approve": "Phê duyệt",
+    "reject": "Từ chối",
+    "noApprovals": "Không có phê duyệt nào đang chờ"
+  },
+  "more": {
+    "title": "Thêm",
+    "form": "Biểu mẫu",
+    "drawing": "Bản vẽ",
+    "photo": "Hình ảnh",
+    "training": "Đào tạo",
+    "exam": "Thi cử",
+    "setting": "Cài đặt",
+    "logout": "Đăng xuất"
   }
 }
 

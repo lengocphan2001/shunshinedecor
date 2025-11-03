@@ -103,6 +103,25 @@ export const generateBreadcrumbItems = (
         label: params.inspectionItemTitle,
       });
     }
+  } else if (currentScreen === 'chatDetail') {
+    // For chat detail: Chat > [ChatName]
+    items.push({
+      id: '1',
+      label: 'Chat',
+      onPress: () => {
+        if (onNavigateToScreen) {
+          onNavigateToScreen('chat');
+        } else if (onGoBack) {
+          onGoBack();
+        }
+      },
+    });
+    if (params?.chatName) {
+      items.push({
+        id: '2',
+        label: params.chatName,
+      });
+    }
   } else {
     // For other screens, use simple path
     const currentPath = SCREEN_PATHS[currentScreen];

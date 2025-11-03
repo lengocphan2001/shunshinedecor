@@ -117,8 +117,8 @@ export const darkTheme: ThemeColors = {
   
   text: {
     primary: '#FFFFFF',
-    secondary: '#98989D',
-    tertiary: '#48484A',
+    secondary: '#D1D1D6',
+    tertiary: '#8E8E93',
     white: '#FFFFFF',
     inverse: '#000000',
   },

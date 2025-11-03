@@ -28,8 +28,8 @@ const tabsConfig: TabConfig[] = [
   {
     id: 'home',
     labelKey: 'navigation.home',
-    icon: 'home',
-    activeIcon: 'home',
+    icon: 'chart-bar',
+    activeIcon: 'chart-bar',
   },
   {
     id: 'chat',
@@ -38,23 +38,29 @@ const tabsConfig: TabConfig[] = [
     activeIcon: 'comment',
   },
   {
-    id: 'profile',
-    labelKey: 'navigation.profile',
-    icon: 'user',
-    activeIcon: 'user',
+    id: 'approval',
+    labelKey: 'navigation.approval',
+    icon: 'check-circle',
+    activeIcon: 'check-circle',
   },
   {
-    id: 'setting',
-    labelKey: 'navigation.settings',
-    icon: 'cog',
-    activeIcon: 'cog',
+    id: 'todo',
+    labelKey: 'navigation.todo',
+    icon: 'clipboard-list',
+    activeIcon: 'clipboard-list',
+  },
+  {
+    id: 'more',
+    labelKey: 'navigation.more',
+    icon: 'ellipsis-h',
+    activeIcon: 'ellipsis-h',
   },
 ];
 
 export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, isDark } = useTheme();
+  const styles = createStyles(colors, isDark);
 
   return (
     <View style={styles.container}>
@@ -82,7 +88,6 @@ export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
                 {t(tab.labelKey)}
               </Text>
             </View>
-            {isActive && <View style={styles.activeIndicator} />}
           </TouchableOpacity>
         );
       })}
@@ -90,20 +95,23 @@ export default function BottomMenu({ activeTab, onTabPress }: BottomMenuProps) {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   container: {
-    backgroundColor: colors.cardBackground,
+    backgroundColor: 'transparent',
     flexDirection: 'row',
-    paddingTop: spacing.md,
-    paddingBottom: Platform.OS === 'ios' ? 34 : spacing.md,
-    paddingHorizontal: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.divider,
+    paddingTop: spacing.xs,
+    paddingBottom: Platform.OS === 'ios' ? spacing.md : spacing.xs,
+    paddingHorizontal: spacing.lg,
+    marginHorizontal: spacing.lg,
+    marginBottom: Platform.OS === 'ios' ? spacing.xs : spacing.sm,
+    borderRadius: spacing.borderRadius.large,
+    borderWidth: 1,
+    borderColor: colors.divider,
   },
   tabButton: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.xs,
     position: 'relative',
   },
   tabContent: {

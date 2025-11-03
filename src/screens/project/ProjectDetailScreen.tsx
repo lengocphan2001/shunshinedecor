@@ -16,6 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 interface ProjectDetailProps extends BaseScreenProps {
   onNavigateToITPInspection?: (params: { projectId: string; projectName?: string }) => void;
+  onNavigateToQuickReport?: (params: { projectId: string; projectName?: string }) => void;
 }
 
 type ProjectTab = 'tool' | 'overview' | 'doc' | 'photo';
@@ -29,6 +30,7 @@ export default function ProjectDetailScreen({
   projectName = 'EPS_HMC',
   onGoBack,
   onNavigateToITPInspection,
+  onNavigateToQuickReport,
   navigationStack,
   onNavigateToScreen
 }: ProjectDetailProps) {
@@ -59,7 +61,16 @@ export default function ProjectDetailScreen({
       id: '1',
       title: 'Quick Report',
       icon: 'bolt',
-      onPress: () => console.log('Quick Report pressed'),
+      onPress: () => {
+        if (onNavigateToQuickReport) {
+          onNavigateToQuickReport({
+            projectId: projectId || '',
+            projectName,
+          });
+        } else {
+          console.log('Quick Report pressed');
+        }
+      },
     },
     {
       id: '2',

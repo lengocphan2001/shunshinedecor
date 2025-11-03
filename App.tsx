@@ -9,6 +9,8 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 import AppNavigator from './src/screens/navigation/AppNavigator';
 import { ThemeProvider, useTheme } from './src/theme';
+import { AuthProvider } from './src/contexts/AuthContext';
+import { SocketProvider } from './src/contexts/SocketContext';
 import './src/i18n/config'; // Initialize i18n
 
 function AppContent() {
@@ -25,7 +27,11 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
       <AppContent />
+        </SocketProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

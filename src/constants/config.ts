@@ -1,8 +1,13 @@
 // App configuration constants
+import { Platform } from 'react-native';
+const DEFAULT_API_BASE = 'http://192.168.1.54:4000';
+
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || DEFAULT_API_BASE;
+
 export const APP_CONFIG = {
   name: 'SunShine Decor',
   version: '1.0.0',
-  apiBaseUrl: process.env.EXPO_PUBLIC_API_URL || 'https://api.sunshinedecor.com',
+  apiBaseUrl: API_BASE_URL,
 } as const;
 
 // UI Configuration

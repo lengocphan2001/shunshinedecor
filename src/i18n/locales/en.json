@@ -15,7 +15,9 @@
     "back": "Back",
     "next": "Next",
     "done": "Done",
-    "ok": "OK"
+    "ok": "OK",
+    "close": "Close",
+    "create": "Create"
   },
   "auth": {
     "login": "Login",
@@ -33,6 +35,8 @@
     "activityLog": "Activity Log",
     "addMore": "+ Add more",
     "noProjects": "No projects yet",
+    "addProject": "Add Project",
+    "create": "Create",
     "noActivities": "No activities yet"
   },
   "project": {
@@ -68,11 +72,28 @@
   "chat": {
     "title": "Chat",
     "messages": "Messages",
-    "typeMessage": "Type a message...",
+    "typeMessage": "Message...",
     "send": "Send",
     "noMessages": "No messages yet",
     "online": "Online",
     "offline": "Offline"
+  },
+  "chatDetail": {
+    "topic": "Topic",
+    "chat": "Chat",
+    "typeMessage": "Message...",
+    "sendFile": "Send file",
+    "survey": "Survey",
+    "transfer": "Transfer",
+    "group": "Group",
+    "noTopics": "No topics yet",
+    "noMessages": "No messages yet",
+    "connecting": "Connecting...",
+    "quality": "Quality",
+    "schedule": "Schedule",
+    "drawing": "Drawing",
+    "others": "Others",
+    "chooseTopicFirst": "+ Choose topic first"
   },
   "profile": {
     "title": "Profile",
@@ -110,12 +131,38 @@
     "onTrack": "On Track"
   },
   "navigation": {
-    "home": "Home",
+    "home": "Project",
     "projects": "Projects",
     "inspection": "Inspection",
-    "chat": "Chat",
+    "chat": "Discussion",
+    "approval": "Approval",
+    "todo": "Task",
+    "more": "More",
     "profile": "Profile",
     "settings": "Settings"
+  },
+  "approval": {
+    "title": "Approval Center",
+    "search": "Search",
+    "all": "All",
+    "quality": "Quality",
+    "schedule": "Schedule",
+    "material": "Material",
+    "drawing": "Drawing",
+    "review": "Review",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noApprovals": "No approvals pending"
+  },
+  "more": {
+    "title": "More",
+    "form": "Form",
+    "drawing": "Drawing",
+    "photo": "Photo",
+    "training": "Training",
+    "exam": "Exam",
+    "setting": "Setting",
+    "logout": "Logout"
   }
 }
 

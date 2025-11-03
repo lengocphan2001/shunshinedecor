@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Switch,
+  Image,
+  Modal,
+  SafeAreaView,
+  FlatList,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '../../components/layout/MainLayout';
@@ -26,11 +30,12 @@ interface SettingItem {
 
 export default function SettingScreen() {
   const { t } = useTranslation();
-  const { getCurrentLanguageInfo } = useLanguage();
-  const { isDark, toggleTheme, colors } = useTheme();
+  const { currentLanguage, changeLanguage, languages, getCurrentLanguageInfo } = useLanguage();
+  const { isDark, toggleTheme, colors, backgroundKey, setBackgroundKey } = useTheme();
   const [notifications, setNotifications] = useState(true);
   const [autoSync, setAutoSync] = useState(true);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [backgroundModalVisible, setBackgroundModalVisible] = useState(false);
 
   const handleProfilePress = () => {
     console.log('Profile pressed');
@@ -50,6 +55,18 @@ export default function SettingScreen() {
 
   const currentLanguageInfo = getCurrentLanguageInfo();
 
+  const backgroundLabel = useMemo(() => {
+    switch (backgroundKey) {
+      case 'background1':
+        return 'Background 1';
+      case 'background2':
+        return 'Background 2';
+      case 'background3':
+      default:
+        return 'Background 3';
+    }
+  }, [backgroundKey]);
+
   const settingItems: SettingItem[] = [
     {
       id: 'account',
@@ -58,6 +75,14 @@ export default function SettingScreen() {
       icon: 'user',
       type: 'navigation',
       onPress: () => console.log('Account Settings'),
+    },
+    {
+      id: 'background',
+      title: 'Background',
+      description: backgroundLabel,
+      icon: 'image',
+      type: 'navigation',
+      onPress: () => setBackgroundModalVisible(true),
     },
     {
       id: 'notifications',
@@ -175,13 +200,118 @@ export default function SettingScreen() {
         </ScrollView>
       </View>
 
-      {/* Language Switcher Modal */}
-      {languageModalVisible && (
-        <LanguageSwitcher 
-          variant="button" 
-          onLanguageChange={() => setLanguageModalVisible(false)}
-        />
-      )}
+      {/* Language Bottom Sheet Modal */}
+      <Modal
+        visible={languageModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setLanguageModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <SafeAreaView style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('settings.selectLanguage')}</Text>
+                <TouchableOpacity
+                  onPress={() => setLanguageModalVisible(false)}
+                  style={styles.closeButton}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={languages}
+                keyExtractor={(item) => item.code}
+                style={styles.languageList}
+                renderItem={({ item }) => {
+                  const isSelected = item.code === currentLanguage;
+                  return (
+                    <TouchableOpacity
+                      style={[styles.languageOption, isSelected && styles.selectedOption]}
+                      onPress={async () => {
+                        await changeLanguage(item.code);
+                        setLanguageModalVisible(false);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <View style={styles.languageInfo}>
+                        <Text style={[styles.languageName, isSelected && styles.selectedText]}>
+                          {item.nativeName}
+                        </Text>
+                        <Text style={[styles.languageCode, isSelected && styles.selectedSubtext]}>
+                          {item.name}
+                        </Text>
+                      </View>
+                      {isSelected && (
+                        <View style={styles.checkmark}>
+                          <Text style={styles.checkmarkText}>✓</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </View>
+          </SafeAreaView>
+        </View>
+      </Modal>
+
+      {/* Background Picker Modal */}
+      <Modal
+        visible={backgroundModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setBackgroundModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <SafeAreaView style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Choose Background</Text>
+                <TouchableOpacity
+                  onPress={() => setBackgroundModalVisible(false)}
+                  style={styles.closeButton}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.modalGrid}>
+                {(['background1', 'background2', 'background3'] as const).map((key) => (
+                  <TouchableOpacity
+                    key={key}
+                    style={[
+                      styles.modalItem,
+                      backgroundKey === key && styles.modalItemActive,
+                    ]}
+                    onPress={() => {
+                      setBackgroundKey(key);
+                      setBackgroundModalVisible(false);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Image
+                      source={
+                        key === 'background1'
+                          ? require('../../../assets/backgrounds/background1.jpg')
+                          : key === 'background2'
+                            ? require('../../../assets/backgrounds/background2.jpg')
+                            : require('../../../assets/backgrounds/background3.jpg')
+                      }
+                      style={styles.modalImage}
+                      resizeMode="cover"
+                    />
+                    <Text style={styles.modalLabel}>
+                      {key === 'background1' ? 'Background 1' : key === 'background2' ? 'Background 2' : 'Background 3'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SafeAreaView>
+        </View>
+      </Modal>
     </MainLayout>
   );
 }
@@ -198,12 +328,131 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingTop: spacing.lg,
     paddingBottom: spacing.xl,
   },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.cardBackground,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: spacing.xl,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.divider,
+  },
+  modalTitle: {
+    ...typography.styles.displayMedium,
+    fontSize: 20,
+    color: colors.text.primary,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: colors.text.secondary,
+  },
+  modalGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+  },
+  modalItem: {
+    flex: 1,
+    marginRight: spacing.md,
+    borderRadius: spacing.borderRadius.medium,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  modalItemActive: {
+    borderColor: colors.primary,
+  },
+  modalImage: {
+    width: '100%',
+    height: 120,
+  },
+  modalLabel: {
+    ...typography.styles.textMedium,
+    fontSize: 14,
+    textAlign: 'center',
+    paddingVertical: spacing.xs,
+    color: colors.text.secondary,
+    backgroundColor: colors.cardBackground,
+  },
   settingItem: {
     backgroundColor: colors.cardBackground,
     borderRadius: spacing.borderRadius.medium,
     padding: spacing.lg,
     marginBottom: spacing.md,
     
+  },
+  // Language list styles (match LanguageSwitcher)
+  languageList: {
+    paddingHorizontal: spacing.lg,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    borderRadius: 8,
+    marginTop: spacing.sm,
+  },
+  selectedOption: {
+    backgroundColor: colors.primary + '15',
+  },
+  languageInfo: {
+    flex: 1,
+  },
+  languageName: {
+    ...typography.styles.textMedium,
+    fontSize: 16,
+    color: colors.text.primary,
+    marginBottom: 2,
+  },
+  languageCode: {
+    ...typography.styles.textMedium,
+    fontSize: 13,
+    color: colors.text.secondary,
+  },
+  selectedText: {
+    color: colors.primary,
+    fontWeight: 'bold',
+  },
+  selectedSubtext: {
+    color: colors.primary,
+  },
+  checkmark: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkmarkText: {
+    fontSize: 18,
+    color: colors.primary,
+    fontWeight: 'bold',
   },
   settingContent: {
     flexDirection: 'row',

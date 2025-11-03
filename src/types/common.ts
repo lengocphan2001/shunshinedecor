@@ -15,7 +15,7 @@ export interface NavigationTab {
   activeIcon: string;
 }
 
-export type TabType = 'home' | 'chat' | 'profile' | 'setting';
+export type TabType = 'home' | 'chat' | 'approval' | 'todo' | 'more';
 
 export interface ApiResponse<T> {
   success: boolean;

@@ -38,9 +38,10 @@ export default function ProjectItem({ project, onPress }: ProjectItemProps) {
         <Text style={styles.dateRange}>{project.dateRange}</Text>
       </View>
 
-      {/* Middle - Count */}
+      {/* Middle - Count (Days remaining) */}
       <View style={styles.middleSection}>
         <Text style={styles.count}>{project.count}</Text>
+        <Text style={styles.countLabel}>days</Text>
       </View>
 
       {/* Right side - Status Badge */}
@@ -83,13 +84,19 @@ const createStyles = (colors: any) => StyleSheet.create({
   middleSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 40,
+    minWidth: 50,
   },
   count: {
     ...typography.styles.displayMedium,
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.text.primary,
+  },
+  countLabel: {
+    ...typography.styles.textSmall,
+    fontSize: 10,
+    color: colors.text.secondary,
+    marginTop: 2,
   },
   rightSection: {
     alignItems: 'flex-end',

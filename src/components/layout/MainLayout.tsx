@@ -32,7 +32,6 @@ export default function MainLayout({
         onNotificationPress={onNotificationPress}
         notificationCount={notificationCount}
       />
-      
       <View style={styles.content}>
         {children}
       </View>
@@ -43,7 +42,7 @@ export default function MainLayout({
 const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
   },
   content: {
     flex: 1,
